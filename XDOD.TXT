@@ -1,0 +1,367 @@
+
+  _____                                                   __ 
+ |  __ \                                                 / _|
+ | |  | |_   _ _ __   __ _  ___  ___  _ __  ___     ___ | |_ 
+ | |  | | | | | '_ \ / _` |/ _ \/ _ \| '_ \/ __|   / _ \|  _|
+ | |__| | |_| | | | | (_| |  __/ (_) | | | \__ \  | (_) | |  
+ |_____/_\__,_|_| |_|\__, |\___|\___/|_| |_|___/ _ \___/|_|  
+   |  __ \            __/ |                 | | | |          
+   | |  | | __ _  __ |___/ _  ___  _ __ __ _| |_| |__        
+   | |  | |/ _` |/ _` |/ _` |/ _ \| '__/ _` | __| '_ \       
+   | |__| | (_| | (_| | (_| | (_) | | | (_| | |_| | | |      
+   |_____/ \__,_|\__, |\__, |\___/|_|  \__,_|\__|_| |_|      
+                  __/ | __/ |                                
+                 |___/ |___/                                   
+
+        Commander X16 Port by Xiphod - November 2026
+
+
+QUICK START
+===========
+LOAD"XDOD.PRG",8      (load/save games also use DEVICE 8)
+RUN
+
+Press any key to start the first level.
+If no key is pressed, a self-play demo is presented.
+
+You can queue in starting commands during the "PREPARE" scene.
+Suggested start:
+P R T     (pull torch from inventory to right hand)
+U R       (use the torch to light it)
+P L SW    (pull sword to left hand)
+M         (move one cell)
+T A       (turn around)
+A L       (attack with sword in left hand)
+HINT: You can use sword in right hand if you prefer, 
+use "P R SW" and "A R" instead in that case.
+
+
+INTRODUCTION
+============
+Dungeons of Daggorath (DoD) is a historic dungeon crawl game.  
+Packed to fit into just one 8KB ROM, it became one of the most 
+famous games from 1982.  
+
+Featuring...
+
+- Real time player/creature movement and combat
+- Time limited torches (15/30/60 minute, and 5 minute dead torches)
+- Degraded vision as torches wear out
+- A constant heartbeat audio that is your only player-stat indicator
+- A "fainting" game mechanic, where overexerting yourself can cause the
+  character to faint- and sometimes can't recover!
+- Dungeons that are technically randomly generated, but use a selected
+  seed so that they always come out arranged the same for each level.
+- Excellent use of the CoCo 6-bit DAC audio, interwoven with the gameplay
+- Creature audio scales to their distance from the player
+- A meaningful REVEAL/INCANT game mechanic to unlock more powerful items
+- A 4-row command terminal while also a simulteneous 3D depiction 
+  of the game state around the player.
+
+Daggorath was also part of the plot in the Ready Player One 
+novel from 2011.
+
+While simplistic in todays terms, Daggorath was groundbreaking
+for its time!  Hardly any game since then has reproduced the 
+heartbeat and torch fading effects in such an immersive fashion.
+
+For many years Daggorath was exclusive-software to the Tandy Color Computer
+system.  The first non-6809 based port wasn't until 2002!  Around this
+same year, the prime creator of Daggorath (Douglas Morgan, 
+DynaMicro President) deemed the work to be "non-exclusive license"
+(provided there is effort to preserve the original form).  The source 
+code was publically archived in 2018.
+https://github.com/MichaelSpencerJr/DungeonsOfDaggorath
+
+
+Original Dungeons of Daggorath development team (of DynaMicro in San Diego):
+
+  Douglas J. Morgan
+  Phil Landmeier
+  Keith S. Kiyohara
+  April Landmeier
+
+
+
+COMMANDS
+========
+
+EXAMINE         E
+LOOK            L
+  Examine what is in your inventory backpack.  To exit
+  the examination view and return to the dungeon view, 
+  use the LOOK command.  The currently USED (active) torch
+  is displayed in inverse text.  The EXAMINE view also
+  shows a listing of what items are dropped in the current cell.
+  If a creature enters your current cell while in the
+  backpack-view, the word "CREATURE" appears at the top.
+
+MOVE               M
+MOVE BACK          M B
+  Move forward one dungeon cell or back one cell.
+  
+MOVE LEFT          M L
+MOVE RIGHT         M R
+  Sidestep laterally one cell, either left or right.
+  You remain facing the same direction.
+
+TURN LEFT          T L
+TURN RIGHT         T R
+TURN AROUND        T A 
+  Turn left, right, or 180-degree within the current cell.
+
+CLIMB DOWN         C D
+CLIMB UP           C U
+  Climb down (through hole or with a ladder).  If a ladder is 
+  present, you can climb back up (but caution in doing so!).
+
+ATTACK LEFT        A L
+ATTACK RIGHT       A R 
+  Attacking using whatever item is in your left or right
+  hand.  You can even attack empty-handed.  Normally you
+  attack with sword, but can also use shield, rings, or
+  essentially any other item.  They'll do damage proportional
+  to their type.  Attacking with a strong weapon while
+  you're still weak will cause exertion (and eventually
+  you can faint).
+  
+GET LEFT <item>    G L <item>
+GET RIGHT <item>   G R <item>
+  If the corresponding hand is empty, this command picks
+  items up off the ground.  Items are SCROLL, FLASK,
+  SHIELD, SWORD, RING, TORCH.  The parser also allows
+  specifying revealed items.  For example, if there are
+  several types of torches, you can do "G R LUNAR T"
+  to pick up a Lunar type.
+  
+PULL LEFT <item>   P L <item>
+PULL RIGHT <item>  P R <item>
+  If the corresponding hand is empty, this command pulls
+  the specified item out of the backpack-inventory.
+  For example, the starter move is typically
+  PULL RIGHT TORCH   (P R T)
+  USE RIGHT          (U R)
+  Like the GET command, the parser supports also specific
+  item types.  For example, "P R DEAD T" would pull 
+  a DEAD torch out of the inventory.
+
+DROP LEFT          D L
+DROP RIGHT         D R
+  Drop whatever is in your left or right hand onto the
+  floor of the current cell.  Such items will persist,
+  unless a creature picks it up.  Generally you drop
+  dead torches or weaker weapons.  Carrying too much
+  will increase exertion while moving.
+
+USE LEFT           U L
+USE RIGHT          U R 
+  Make use of the item that is either in your left or
+  right hand.  You use a torch, scroll, flask.
+  
+REVEAL LEFT        R L
+REVEAL RIGHT       R R
+  Certain powerful items can't be used effectively until 
+  they have been revealed.  This includes stronger magical 
+  torches, rings, scrolls- but also weapons like sword and
+  shield.  If you can't reveal an item, then you're likely
+  not ready to make use of it yet.  One exception is FLASK,
+  you can risk those at any time.
+
+INCANT <word>      I <word>
+  Rings must be incanted before their full power can be
+  used in an attack.  Revealing a ring gives a hint on
+  what its incantation word might be.  Once incanted,
+  a ring only has three shots before returning to a normal
+  Gold Ring.  The incantation word must be typed in full.
+
+ZSAVE              SAVE TO DEFAULT XDOD.SAV FILE
+ZSAVE <slot>       SAVE TO XDOD-<slot>.SAV (slot can be 1 to 8 digits)
+ZSAVE <slot> F     SAME AS ABOVE, BUT NO REPLICA TAPE-AUDIO
+
+ZLOAD              LOAD USING DEFAULT XDOD.SAV FILE
+ZLOAD <slot>       LOAD USING XDOD-<slot>.SAV
+ZLOAD <slot> F     SAME AS ABOVE, BUT NO REPLICA TAPE-AUDIO
+
+  NOTE: The ZSAVE and ZLOAD assume use of DEVICE 8 and CWD.
+
+COLOR 0            BLACK AND WHITE (same as just "COLOR")
+COLOR 1            FAUX COCO1 STYLE ARTEFACTING RED/BLUE
+COLOR 2            "CRISP" COCO2 STYLE
+COLOR 3            "CRISP" COCO3 RGB STYLE (BLUE/YELLOW)
+  NOTE: Repeating "COLOR 1", 2, or 3 will "invert" the colors of that mode.
+
+BUG
+  Toggles the "shield bug" on or off.  "ON" is the original
+  authentic way the game was played.
+
+
+HINTS
+=====
+The original Daggorath manual is intentionally somewhat-vague,
+in a "no spoilers" fashion.  This builds up the lore and mystery
+of the game.
+
+Personally, I imagined a back story prequel where the villagers
+had invaded the Wizards lands -- thus explaining why he was so
+bitter.  Intersting stories tend to build up backstories on
+villains.  e.g. 1992 Batman Return movie with The Penguin 
+comes to mind.
+
+I'll give a few hints that the original manual didn't:
+
+- If you move too much while carrying a lot of things,
+  the heartrate goes up faster.  So move slow and steady.
+- Banging into walls can cause you to faint!
+- The creatures do pick up items.  Study on this, since
+  you can use this to your advantage.  But there are two 
+  types of creatures that have an exception to this rule,
+  the Wizard being obvious since he doesn't care about items.
+- With the starter PINE torch, you can't see magical
+  doorways (they appear triangular with the better torches).
+  But you can still walk through them- this is why sometimes
+  it appears you can walk through walls.
+
+
+WHAT IS XDOD (background)
+============
+XDOD is a Commander X16 port of the original source code as archived here:
+https://github.com/MichaelSpencerJr/DungeonsOfDaggorath
+
+The Commander X16 is an 8MHz 65C02 based system, but also has
+specialized video (and PCM audio) provided by the VERA daughter board.
+
+I played Daggorath originally on a 64KB Tandy Color Computer II,
+with the S-video adapted to the RF-input of a television.
+I did finally beat the game on my own, in 1991, after many years
+of pondering the ring incantations.  
+
+During COVID, I happened to receive an original silver-colored
+16KB Tandy Color Computer.  Around 2022, I ended up recording a full
+play-thru of the game.  That recording is available here:
+https://www.youtube.com/watch?v=NotVeSUw4o4
+(see the Description of that video for links to the ZSAVE'd games
+created during that play-thru).
+It was also in this year that I learned that the original Daggorath ROM 
+plays slightly differently on the CoCo3 (mainly because of the
+slightly different GIME graphics hardware it had).
+
+XDOD development began Sunday November 8th, 2026, 
+using GPT 6.1 Desktop, with the prompted intention of being
+produced to run on the X16 and making use of the ca65 assembler.
+The resulting full-playable release was available 2-days later.
+This started as a personal experiment, since I hadn't used 
+GPT Codex before.
+
+This manual, however, was completely written manually - 
+except for the chart at the very end.
+
+
+KNOWN DIFFERENCES ("enhancements")
+=================
+The primary goal was to replicate the original Daggorath experience,
+and to match all of its original timing (as played on the original
+16KB Color Computer when the game was first available) and game
+mechanics to the extent possible.
+
+But during the development, I did take a few liberties:
+
+- a "COLOR" command is added to choose between several different
+  visual styles.  Since most folks don't use CRTs anymore,
+  the color-artifacting of the original is lost on modern hardware.
+  So COLOR 1 is an attempt to replicate that style.
+  COLOR 3 is how I believe CoCo3 RGB would visualize the game.
+  COLOR 0 is a purely black and white style, that may end up
+  having artifacts if you do use a certain CRT.
+  
+- With the last few bytes of X16 LoRAM available, I decided to
+  go ahead and add a "BUG" command that toggles whether the
+  original "shield bug" is present.  By default, the BUG is
+  ON/ENABLED (since that's authentic to the original).
+  Typing BUG will toggle this OFF and fix the original bug.
+  But what's interesting in HOW the bug fix is applied:
+  it uses "self modifying code" so that there is no runtime
+  overhead in checking the bug-presence state.
+
+- If you are defeated, the original game would wait for a key at
+  the death scene.  For XDOD, I gave this about an 8 second idle before
+  returning to the main screen.  This way at things like VCF's,
+  the game can cycle back to the self-play demo mode more easily.
+  
+- ZSAVE/ZLOAD happens instantly on the X16.  So by default, I
+  intentionally slow it down and play a "faux" tape-data noise
+  during the save or load action. It's semi-authentic in that the
+  audio tones will vary with the data involved.  The original
+  game took about 30 seconds to save.  For XDOD, I set this
+  audio-replica of saving to 3 seconds.   You can also have
+  mutliple saved games, and you can skip the faux-tape-noise
+  by adding "F" to the end of the ZSAVE/ZLOAD command (F for FAST).
+  This was just a audio hommage to what we experienced originally
+  in playing Daggorath.
+  NOTE: In 1986, a DaggorPatch floated around that patched the
+  original binary and allowed disk-based saved games (and other
+  features like a print-screen capture).
+
+- The self-play demo is mostly accurate to the original, there
+  are a couple minor differences.  I tried my best to get the 
+  timing aligned.  That they packed this auto-self-play into 
+  the 8KB ROM is still amazing to me.    But the way it works 
+  means it is very sensitive to the CPU speed (whether real 
+  or simulated).
+  
+
+SHIELD BUG: WHAT IS IT?
+=======================
+
+The brief answer: 
+  Apparent reversal of Leather and Bronze shield defenses,
+  relative to their Physical vs Magical categories.
+
+In the original Dungeons of Daggorath, the Leather and Bronze shields 
+reduce magical damage and provide no protection against physical damage. 
+That makes them ineffective against early enemies such as spiders and vipers. 
+This is what players call the shield bug.
+(and this has been identified in the original cartridge ROM binary disassembly)
+
+The fix swaps those two effects. Leather reduces physical damage by 
+about 16%, and Bronze by 25%. Both give up their magical protection. 
+Mithril is unaffected because it already halves both types of damage. 
+Shields change how much damage a landed hit deals, while the chance of 
+being hit stays the same.
+
+XDOD starts with the original behavior. Type BUG once to apply the fix 
+(SHIELD BUG OFF) and again to restore the original (SHIELD BUG ON).
+The BUG state isn't reset during death, replay of the self-demo, or 
+a ZLOAD or any other means- it stays to whatever you last set it,
+until you restart the system or reload the PRG.
+
+
+I asked GPT to very explicitly explain this bug, in the form of a chart.
+The BUG is related to a multiplier that gets applied - so the fix isn't
+changing table-values per se, but correcting which category has which
+multiplier (Mithril technically has the same bug, but since its the same
+multiplier for both Physical and Magical, the bug doesn't impact it).
+
+
+Dungeons of Daggorath shield damage
+
+Each cell shows PHYSICAL then MAGICAL damage per landed hit with 
+one revealed shield held in either hand.
+
+Before = classic cartridge behavior. After = shield fix enabled.
+Values include the original integer rounding.
+
+Creature        |   No shield | Leather before | Leather after | Bronze before | Bronze after | Mithril both
+----------------+-------------+----------------+---------------+---------------+--------------+-------------
+Spider          |    32     0 |       32     0 |      27     0 |      32     0 |     24     0 |     16     0
+Viper           |    35     0 |       35     0 |      29     0 |      35     0 |     26     0 |     17     0
+Stone Giant     |    81     0 |       81     0 |      68     0 |      81     0 |     60     0 |     40     0
+Blob            |   228     0 |      228     0 |     192     0 |     228     0 |    171     0 |    114     0
+Knight          |   378     0 |      378     0 |     318     0 |     378     0 |    283     0 |    189     0
+Axe Giant       |   704     0 |      704     0 |     594     0 |     704     0 |    528     0 |    352     0
+Scorpion        |   796   796 |      796   671 |     671   796 |     796   597 |    597   796 |    398   398
+Shielded Knight |  1593     0 |     1593     0 |    1344     0 |    1593     0 |   1194     0 |    796     0
+Wraith          |  1200  1200 |     1200  1012 |    1012  1200 |    1200   900 |    900  1200 |    600   600
+Balrog          |  1992  1992 |     1992  1680 |    1680  1992 |    1992  1494 |   1494  1992 |    996   996
+Level 3 Wizard  |  1992  1992 |     1992  1680 |    1680  1992 |    1992  1494 |   1494  1992 |    996   996
+Level 5 Wizard  | 15937 15937 |    15937 13446 |   13446 15937 |   15937 11952 |  11952 15937 |   7968  7968
+                (phys.)(magic.)
